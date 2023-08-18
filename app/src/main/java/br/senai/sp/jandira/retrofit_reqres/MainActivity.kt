@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.lifecycle.lifecycleScope
+import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -27,21 +28,33 @@ class MainActivity : AppCompatActivity() {
 
         //BOTÃO DE PUT
         findViewById<Button>(R.id.btnPUT).setOnClickListener {
-            Log.e("PUTTING-DATA", "TESTE DE BOTÃO PUT")
+            //Log.e("PUTTING-DATA", "TESTE DE BOTÃO PUT")
+
+            updateUser()
+
         }
 
         //BOTÃO DE DELETE
         findViewById<Button>(R.id.btnDELETE).setOnClickListener {
-            Log.e("DELETING-DATA", "TESTE DE BOTÃO DELETE")
+            //Log.e("DELETING-DATA", "TESTE DE BOTÃO DELETE")
+
+            deleteUser()
+
         }
 
         //BOTÃO DE POST
         findViewById<Button>(R.id.btnPOST).setOnClickListener {
-            Log.e("POSTING-DATA", "TESTE DE BOTÃO POST")
+            //Log.e("POSTING-DATA", "TESTE DE BOTÃO POST")
+
+            createUser()
+
         }
 
     }
 
+
+
+    //LISTAGEM DE USUARIO
     private fun getUserById() {
         lifecycleScope.launch {
             val result = apiService.getUserById("2")
@@ -54,4 +67,58 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+    //INSERIR USUARIO
+    private fun createUser() {
+        lifecycleScope.launch {
+            val body = JsonObject().apply{
+                addProperty("name", "Muryllo Vieira")
+                addProperty("job", "Desenvolvedor Full Stack")
+            }
+
+            val result = apiService.createUser(body)
+
+            if (result.isSuccessful) {
+                Log.i("CREATE-DATA", "${result.body()}")
+            } else {
+                Log.i("CREATE-DATA", "${result.message()}")
+            }
+
+        }
+    }
+
+    //ATUALIZAR USUARIO
+    private fun updateUser() {
+        lifecycleScope.launch {
+            val body = JsonObject().apply{
+                addProperty("name", "Muryllo Vieira")
+                addProperty("job", "Desenvolvedor Full Stack")
+            }
+
+            val result = apiService.updateUser("10", body)
+
+            if (result.isSuccessful) {
+                Log.i("UPDATE-DATA", "${result.body()}")
+            } else {
+                Log.i("UPDATE-DATA", "${result.message()}")
+            }
+
+        }
+    }
+
+    //DELETAR USUARIO
+    private fun deleteUser() {
+        lifecycleScope.launch {
+
+            val result = apiService.deleteUser("10")
+
+            if (result.isSuccessful) {
+                Log.e("DELETE-DATA", "${result}")
+            } else {
+                Log.e("DELETE-DATA", "${result.message()}")
+            }
+
+        }
+    }
+
 }
